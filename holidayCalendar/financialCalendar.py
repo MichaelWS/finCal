@@ -59,6 +59,7 @@ def _process_exch_time(exch_time_dict):
 
 
 class ExchangeCalendar(AbstractHolidayCalendar):
+
     """
     Class that defines a Exchange time
     time_info is a dict or list of dicts
@@ -69,7 +70,7 @@ class ExchangeCalendar(AbstractHolidayCalendar):
     a list of [example,...]
     rules
     early_close_rules
-    
+
     """
     rules = []
     start_date = Timestamp(datetime.datetime(1970, 1, 1))
@@ -79,7 +80,7 @@ class ExchangeCalendar(AbstractHolidayCalendar):
     early_close_rules = []
     time_info = None
     open_days = (0, 1, 2, 3, 4)
-    
+
     def __init__(self, name=None, rules=None, early_close_rules=None,
                  open_days=None, time_info=None,
                  tz_info=BASE_TZ_INFO):
@@ -88,7 +89,8 @@ class ExchangeCalendar(AbstractHolidayCalendar):
             self.open_days = open_days
             # Monday Through Friday is default, but Israel as an example
             # of a different day.  also this allows for complex rules
-        #return
+            # there are shifts of ays around the new year in most Asian
+            # countries
         if rules is not None:
             self.rules = rules
         if early_close_rules is not None:
@@ -167,9 +169,10 @@ class ExchangeCalendar(AbstractHolidayCalendar):
         """
         if type(date) != Timestamp:
             date = Timestamp(date)
-        if (date in self._cache[2].index 
+        if (date in self._cache[2].index
                 or date.dayofweek not in self.open_days):
-            return None, None
+            return {"start": None,
+                    "close": None}
             # returning None for market closure.
         else:
             for schedule in self.exchange_schedules:
@@ -178,28 +181,31 @@ class ExchangeCalendar(AbstractHolidayCalendar):
                     break
             start_ts = _create_ts(date, schedule["start"],
                                   self.tz_info)
+            out_sch = {"start": start_ts}
             if date in self._early_close_cache[2].index:
                 if "lunch_start" in schedule:
                     end_ts = _create_ts(date, schedule["lunch_start"],
                                         self.tz_info)
-                    return (start_ts, end_ts), (None, None)
+                    out_sch["close"] = end_ts
                 else:
                     end_ts = _create_ts(date, schedule["early_close"],
                                         self.tz_info)
-                    return (start_ts, end_ts)
+                    out_sch["close"] = end_ts
             else:
                 if "lunch_start" in schedule:
-                    lunch_start_ts = _create_ts(date, schedule["lunch_start"],
-                                                self.tz_info)
-                    lunch_end_ts = _create_ts(date, schedule["lunch_end"],
+                    lunch_ts = _create_ts(date, schedule["lunch_start"],
+                                          self.tz_info)
+                    out_sch["lunch_start"] = lunch_ts
+                    lunch_ts_end = _create_ts(date, schedule["lunch_end"],
                                               self.tz_info)
-                    end_ts = _create_ts(date, schedule["close"],
-                                        self.tz_info)
-                    return (start_ts, lunch_start_ts), (lunch_end_ts, end_ts)
+                    out_sch["lunch_end"] = lunch_ts_end
+                    out_sch["close"] = _create_ts(date, schedule["close"],
+                                                  self.tz_info)
+
                 else:
-                    end_ts = _create_ts(date, schedule["close"],
-                                        self.tz_info)
-                    return (start_ts, end_ts)
+                    out_sch["close"] = _create_ts(date, schedule["close"],
+                                                  self.tz_info)
+            return out_sch
 
 
 def _create_ts(date, time, tz):
@@ -216,9 +222,10 @@ class US_ScheduledCalendar(ExchangeCalendar):
     https://www.nyse.com/markets/hours-calendars
     """
     rules = nyse_rules
+    early_close_rules = nyse_early_close_rules
 
 
-class US_ExchangeCalendar(ExchangeCalendar):
+class US_StockExchangeCalendar(ExchangeCalendar):
 
     """
     US stock exchange calendar specified by
@@ -228,6 +235,3 @@ class US_ExchangeCalendar(ExchangeCalendar):
     early_close_rules = nyse_early_close_rules
     tz_info = BASE_TZ_INFO
     time_info = nyse_times
-
-
-
