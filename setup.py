@@ -64,6 +64,36 @@ QUALIFIER = ''
 FULLVERSION = VERSION
 write_version = True
 
+
+min_pandas_ver = '0.14.1'
+if sys.version_info[0] >= 3:
+
+    setuptools_kwargs = {'install_requires': ['python-dateutil',
+                                              'pytz >= 2011k',
+                                              'pandas >= %s' % min_pandas_ver]
+                         }
+    if not _have_setuptools:
+        sys.exit("need setuptools/distribute for Py3k"
+                 "\n$ pip install distribute")
+else:
+    setuptools_kwargs = {
+        'install_requires': ['python-dateutil',
+                             'pytz >= 2011k',
+                             'pandas  >= %s' % min_pandas_ver],
+        'zip_safe': True,
+    }
+
+    if not _have_setuptools:
+        try:
+            import pandas
+            import dateutil
+            setuptools_kwargs = {}
+        except ImportError:
+            sys.exit("install requires: 'python-dateutil < 2','pandas'."
+                     "  use pip or easy_install."
+                     "\n   $ pip install 'python-dateutil < 2' 'pandas'")
+
+
 if not ISRELEASED:
     import subprocess
     FULLVERSION += '.dev'
