@@ -5,23 +5,30 @@ from pandas.tseries.holiday import (AbstractHolidayCalendar, Holiday,
                                     nearest_workday)
 from pandas import Timestamp
 import datetime
+from finCal.holidays import (New_Years, Christmas)
 
-
-nyse_rules = [Holiday('New Years Day', month=1,  day=1,
-                      observance=nearest_workday),
+nyse_rules = [New_Years,
               USMartinLutherKingJr,
               USPresidentsDay,
               USMemorialDay,
               Holiday('July 4th', month=7,  day=4, observance=nearest_workday),
               USLaborDay,
               USThanksgivingDay,
-              Holiday('Christmas', month=12, day=25,
-                      observance=nearest_workday)]
+              Christmas]
+
 
 nyse_unscheduled = [Holiday('President Nixon Death', year=1994,
                             month=4, day=27),
                     Holiday('President Regan Death', year=2004,
                             month=6, day=11),
+                    Holiday('Sept 11 day 1', year=2001,
+                            month=9, day=11),
+                    Holiday('Sept 11 day 2', year=2001,
+                            month=9, day=12),
+                    Holiday('Sept 11 day 3', year=2001,
+                            month=9, day=13),
+                    Holiday('Sept 11 day 4', year=2001,
+                            month=9, day=14),
                     Holiday('President Gerald Ford', year=2007,
                             month=1, day=2),
                     Holiday('Storm: Sandy day 1', year=2012,
@@ -235,3 +242,12 @@ class US_StockExchangeCalendar(ExchangeCalendar):
     early_close_rules = nyse_early_close_rules
     tz_info = BASE_TZ_INFO
     time_info = nyse_times
+
+country_to_class = {"US": US_StockExchangeCalendar}
+
+
+def get_stock_calendar(country):
+    if country in country_to_class:
+        return country_to_class[country]()
+    else:
+        print("%s not yet implemented" % country)
