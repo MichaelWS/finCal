@@ -1,17 +1,18 @@
 from pandas.tseries.holiday import (AbstractHolidayCalendar, Holiday,
                                     USMartinLutherKingJr, USMemorialDay,
                                     USLaborDay, USThanksgivingDay,
-                                    USPresidentsDay, before_nearest_workday,
-                                    nearest_workday)
+                                    USPresidentsDay)
 from pandas import Timestamp
 import datetime
-from finCal.holidays import (New_Years, Christmas)
+from finCal.holidays import (New_Years, Christmas, July_4th, ChristmasEve,
+                             July_4thEve, ca_tsx_rules,
+                             ca_tsx_early_close_rules)
 
 nyse_rules = [New_Years,
               USMartinLutherKingJr,
               USPresidentsDay,
               USMemorialDay,
-              Holiday('July 4th', month=7,  day=4, observance=nearest_workday),
+              July_4th,
               USLaborDay,
               USThanksgivingDay,
               Christmas]
@@ -43,13 +44,12 @@ nyse_times = {"start": datetime.time(9, 30),
               "early_close": datetime.time(13, 00),
               "end_date": None}
 
+tsx_times = nyse_times.copy()
+
 nyse_exchange_rules = nyse_rules + nyse_unscheduled
 BASE_TZ_INFO = "America/New_York"
 
-nyse_early_close_rules = [Holiday('July 4th', month=7,  day=4,
-                                  observance=before_nearest_workday),
-                          Holiday('Christmas', month=12, day=25,
-                                  observance=before_nearest_workday)]
+nyse_early_close_rules = [July_4thEve, ChristmasEve]
 
 
 def _process_exch_time(exch_time_dict):
@@ -243,7 +243,19 @@ class US_StockExchangeCalendar(ExchangeCalendar):
     tz_info = BASE_TZ_INFO
     time_info = nyse_times
 
-country_to_class = {"US": US_StockExchangeCalendar}
+
+class CA_StockExchangeCalendar(ExchangeCalendar):
+
+    """
+    CA stock exchange calendar
+    """
+    rules = ca_tsx_rules
+    early_close_rules = ca_tsx_early_close_rules
+    tz_info = "America/Toronto"
+    time_info = tsx_times
+
+country_to_class = {"US": US_StockExchangeCalendar,
+                    "CA": CA_StockExchangeCalendar}
 
 
 def get_stock_calendar(country):
