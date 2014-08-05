@@ -15,12 +15,13 @@ def calc_victoria_day(dt):
 
 CAThanksgivingDay = Holiday('Thanksgiving', month=10, day=1,
                             offset=DateOffset(weekday=MO(2)))
-New_Years = Holiday('New Years Day', month=1,  day=1,
+NewYears = Holiday('New Years Day', month=1,  day=1,
                     observance=nearest_workday)
-July_4th = Holiday('July 4th', month=7,  day=4, observance=nearest_workday)
+July4th = Holiday('July 4th', month=7,  day=4, observance=nearest_workday)
+July4thEve = Holiday('July 4th', month=7,  day=4, observance=before_nearest_workday)
 
 CAFamilyDay = Holiday('CA Family Day(Ontario Obs)', month=2,  day=1,
-                      offset=DateOffset(weekday=MO(3)), start=Timestamp(2008))
+                      offset=DateOffset(weekday=MO(3)), start_date=Timestamp("2008-01-01"))
 VictoriaDay = Holiday('Victoria Day', month=5,  day=1,
                       observance=calc_victoria_day)
 Christmas = Holiday('Christmas', month=12, day=25, observance=nearest_workday)
@@ -33,6 +34,6 @@ CALaborDay = USLaborDay
 ChristmasEve = Holiday('Christmas', month=12, day=25,
                        observance=before_nearest_workday)
 
-ca_tsx_rules = [CAThanksgivingDay, New_Years, CAFamilyDay, VictoriaDay,
+ca_tsx_rules = [CAThanksgivingDay, NewYears, CAFamilyDay, VictoriaDay,
                 Christmas, BoxingDay, CanadaDay, CACivicHoliday, CALaborDay]
 ca_tsx_early_close_rules = [ChristmasEve]
