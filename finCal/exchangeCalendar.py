@@ -4,15 +4,15 @@ from pandas.tseries.holiday import (AbstractHolidayCalendar, Holiday,
                                     USPresidentsDay)
 from pandas import Timestamp
 import datetime
-from finCal.holidays import (New_Years, Christmas, July_4th, ChristmasEve,
-                             July_4thEve, ca_tsx_rules,
+from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
+                             July4thEve, ca_tsx_rules,
                              ca_tsx_early_close_rules)
 
-nyse_rules = [New_Years,
+nyse_rules = [NewYears,
               USMartinLutherKingJr,
               USPresidentsDay,
               USMemorialDay,
-              July_4th,
+              July4th,
               USLaborDay,
               USThanksgivingDay,
               Christmas]
@@ -49,7 +49,7 @@ tsx_times = nyse_times.copy()
 nyse_exchange_rules = nyse_rules + nyse_unscheduled
 BASE_TZ_INFO = "America/New_York"
 
-nyse_early_close_rules = [July_4thEve, ChristmasEve]
+nyse_early_close_rules = [July4thEve, ChristmasEve]
 
 
 def _process_exch_time(exch_time_dict):
