@@ -1,55 +1,13 @@
-from pandas.tseries.holiday import (AbstractHolidayCalendar, Holiday,
-                                    USMartinLutherKingJr, USMemorialDay,
-                                    USLaborDay, USThanksgivingDay,
-                                    USPresidentsDay)
+from pandas.tseries.holiday import (AbstractHolidayCalendar)
 from pandas import Timestamp
 import datetime
-from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
-                             July4thEve, ca_tsx_rules,
-                             ca_tsx_early_close_rules)
+from finCal.exchangeInfo import (nyse_early_close_rules, nyse_exchange_rules,
+                                 nyse_times, nyse_rules, ca_tsx_rules,
+                                 ca_tsx_times, ca_tsx_early_close_rules,
+                                 euronext_rules, eu_early_close_rules,
+                                 euronext_times)
 
-nyse_rules = [NewYears,
-              USMartinLutherKingJr,
-              USPresidentsDay,
-              USMemorialDay,
-              July4th,
-              USLaborDay,
-              USThanksgivingDay,
-              Christmas]
-
-
-nyse_unscheduled = [Holiday('President Nixon Death', year=1994,
-                            month=4, day=27),
-                    Holiday('President Regan Death', year=2004,
-                            month=6, day=11),
-                    Holiday('Sept 11 day 1', year=2001,
-                            month=9, day=11),
-                    Holiday('Sept 11 day 2', year=2001,
-                            month=9, day=12),
-                    Holiday('Sept 11 day 3', year=2001,
-                            month=9, day=13),
-                    Holiday('Sept 11 day 4', year=2001,
-                            month=9, day=14),
-                    Holiday('President Gerald Ford', year=2007,
-                            month=1, day=2),
-                    Holiday('Storm: Sandy day 1', year=2012,
-                            month=10, day=29),
-                    Holiday('Storm: Sandy day 2', year=2012,
-                            month=10, day=30),
-                    Holiday('Storm: Sandy day 3', year=2012,
-                            month=11, day=1)]
-
-nyse_times = {"start": datetime.time(9, 30),
-              "close": datetime.time(16, 00),
-              "early_close": datetime.time(13, 00),
-              "end_date": None}
-
-tsx_times = nyse_times.copy()
-
-nyse_exchange_rules = nyse_rules + nyse_unscheduled
 BASE_TZ_INFO = "America/New_York"
-
-nyse_early_close_rules = [July4thEve, ChristmasEve]
 
 
 def _process_exch_time(exch_time_dict):
@@ -186,32 +144,37 @@ class ExchangeCalendar(AbstractHolidayCalendar):
                 if (schedule["end_date"] is None or
                         date <= schedule["end_date"]):
                     break
-            start_ts = _create_ts(date, schedule["start"],
-                                  self.tz_info)
+            # done because some latin american markets have followed nyse
+            # at some part of their history.
+            if "tz_info" in schedule:
+                set_tz = schedule["tz_info"]
+            else:
+                set_tz = self.tz_info
+            start_ts = _create_ts(date, schedule["start"], set_tz)
             out_sch = {"start": start_ts}
             if date in self._early_close_cache[2].index:
                 if "lunch_start" in schedule:
-                    end_ts = _create_ts(date, schedule["lunch_start"],
-                                        self.tz_info)
-                    out_sch["close"] = end_ts
+                    out_sch["close"] = _create_ts(date,
+                                                  schedule["lunch_start"],
+                                                  set_tz)
                 else:
-                    end_ts = _create_ts(date, schedule["early_close"],
-                                        self.tz_info)
-                    out_sch["close"] = end_ts
+                    out_sch["close"] = _create_ts(date,
+                                                  schedule["early_close"],
+                                                  set_tz)
+
             else:
                 if "lunch_start" in schedule:
-                    lunch_ts = _create_ts(date, schedule["lunch_start"],
-                                          self.tz_info)
-                    out_sch["lunch_start"] = lunch_ts
+                    out_sch["lunch"] = _create_ts(date,
+                                                  schedule["lunch_start"],
+                                                  set_tz)
                     lunch_ts_end = _create_ts(date, schedule["lunch_end"],
-                                              self.tz_info)
+                                              set_tz)
                     out_sch["lunch_end"] = lunch_ts_end
                     out_sch["close"] = _create_ts(date, schedule["close"],
-                                                  self.tz_info)
-
+                                                  set_tz)
                 else:
                     out_sch["close"] = _create_ts(date, schedule["close"],
-                                                  self.tz_info)
+                                                  set_tz)
             return out_sch
 
 
@@ -252,14 +215,31 @@ class CA_StockExchangeCalendar(ExchangeCalendar):
     rules = ca_tsx_rules
     early_close_rules = ca_tsx_early_close_rules
     tz_info = "America/Toronto"
-    time_info = tsx_times
+    time_info = ca_tsx_times
 
-country_to_class = {"US": US_StockExchangeCalendar,
-                    "CA": CA_StockExchangeCalendar}
+
+class EU_StockExchangeCalendar(ExchangeCalendar):
+
+    """
+    EU euronext stock exchange calendar
+    """
+    rules = euronext_rules
+    early_close_rules = eu_early_close_rules
+    tz_info = "Europe/Paris"
+    time_info = euronext_times
+
+country_to_stock_class = {"US": US_StockExchangeCalendar,
+                          "CA": CA_StockExchangeCalendar,
+                          "EU": EU_StockExchangeCalendar}
 
 
 def get_stock_calendar(country):
-    if country in country_to_class:
-        return country_to_class[country]()
+    if country in country_to_stock_class:
+        return country_to_stock_class[country]()
     else:
         print("%s not yet implemented" % country)
+
+
+def list_calendars():
+    print("currently implemented countries:" +
+          repr(country_to_stock_class.keys()))
