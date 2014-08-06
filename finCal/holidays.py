@@ -5,7 +5,7 @@ from pandas.tseries.holiday import (after_nearest_workday,  Holiday,
                                     nearest_workday, USLaborDay,
                                     weekend_to_monday)
 import datetime
-from dateutil.relativedelta import MO
+from dateutil.relativedelta import MO, TH
 
 
 def calc_victoria_day(dt):
@@ -15,7 +15,8 @@ def calc_victoria_day(dt):
     return Timestamp(date)
 
 
-
+AfterUSThanksgiving = Holiday('Thanksgiving', month=11, day=1,
+                              offset=[DateOffset(weekday=TH(4)), Day(1)])
 
 
 CAThanksgivingDay = Holiday('Thanksgiving', month=10, day=1,
@@ -44,12 +45,9 @@ MayDay = Holiday('May Day (Labour Day)', month=5, day=1,
                  observance=before_nearest_workday)
 ChristmasEve = Holiday('Christmas', month=12, day=25,
                        observance=before_nearest_workday)
-ChristmasObsAfter = Holiday('Christmas', month=12, day=25, 
+ChristmasObsAfter = Holiday('Christmas', month=12, day=25,
                             observance=weekend_to_monday)
-BoxingDayObsAfter = Holiday('Boxing day after', month=12, day=25, 
+BoxingDayObsAfter = Holiday('Boxing day after', month=12, day=25,
                             observance=weekend_to_monday, offset=Day(1))
-ChristmasEveObsAfter = Holiday('Christmas eve ', month=12, day=25, 
+ChristmasEveObsAfter = Holiday('Christmas eve ', month=12, day=25,
                                observance=weekend_to_monday, offset=Day(-1))
-
-
-
