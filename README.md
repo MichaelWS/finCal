@@ -10,7 +10,7 @@ us = finCal.get_stock_cal("US")
 In [1]: import finCal
 In [2]: us = finCal.get_stock_calendar("US")
 In [3]: us.holidays()
-```
+
 Out[3]: 
 <class 'pandas.tseries.index.DatetimeIndex'>
 [1970-01-01, ..., 2030-12-25]
@@ -40,3 +40,4 @@ In [7]: us.get_market_times(pd.Timestamp("2015-07-01"))
 Out[7]: 
 {'close': Timestamp('2015-07-01 16:00:00-0400', tz='America/New_York'),
  'start': Timestamp('2015-07-01 09:30:00-0400', tz='America/New_York')}
+```
