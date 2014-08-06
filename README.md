@@ -3,14 +3,14 @@ finCal
 
 This is a calendar class for financial exchanges in python.
 
-It will be extended to include futures and roll dates 
+It will be extended to include futures and roll dates
 
-us = finCal.get_stock_cal("US")
-In [1]: import finCal
+   us = finCal.get_stock_cal("US")
+   In [1]: import finCal
 
-In [2]: us = finCal.get_stock_calendar("US")
+   In [2]: us = finCal.get_stock_calendar("US")
 
-In [3]: us.holidays()
+   In [3]: us.holidays()
 
 Out[3]: 
 <class 'pandas.tseries.index.DatetimeIndex'>
