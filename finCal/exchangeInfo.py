@@ -3,14 +3,21 @@ from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
                              VictoriaDay, CanadaDay, CACivicHoliday,
                              CALaborDay, NewYearsEve, MayDay,
                              ChristmasObsAfter, BoxingDayObsAfter,
-                             ChristmasEveObsAfter, AfterUSThanksgiving)
+                             ChristmasEveObsAfter, AfterUSThanksgiving,
+                             JPMarineDay, JPRespectForAgedDay, Jan1st,
+                             Jan2nd, Jan3rd, Dec31st, JPChildrensDay,
+                             JPAutumnalEquinox, JPVernalEquinox,
+                             JPLaborThanksgivingDay, JPComingOfAgeDay,
+                             JPHealthSportsDay, JPConstitutionDay,
+                             JPShowaDay, JPNationalFoundingDay, JPCultureDay,
+                             JPEmperorsBirthday)
 
 import datetime
 from pandas.tseries.holiday import (Holiday, USMartinLutherKingJr,
                                     USMemorialDay,
                                     USLaborDay, USThanksgivingDay,
                                     USPresidentsDay, EasterMonday, GoodFriday)
-
+from pandas import Timestamp
 
 # us_nyse_info
 # specified by https://www.nyse.com/markets/hours-calendars
@@ -78,3 +85,25 @@ euronext_times = {"start": datetime.time(9, 0),
                   "early_close": datetime.time(14, 00),
                   "end_date": None,
                   "tz_info": "Europe/Paris"}
+
+# tokyo info
+# http://en.wikipedia.org/wiki/Tokyo_Stock_Exchange
+jp_tse_times = [{"start": datetime.time(9, 0),
+                 "close": datetime.time(15, 00),
+                 "early_close": datetime.time(11, 00),
+                 "lunch_start": datetime.time(11, 0),
+                 "lunch_end": datetime.time(13, 00),
+                 "end_date": Timestamp("2006-04-24"),
+                 "tz_info": "Asia/Tokyo"},
+                {"start": datetime.time(9, 0),
+                 "close": datetime.time(15, 00),
+                 "early_close": datetime.time(11, 30),
+                 "lunch_start": datetime.time(11, 30),
+                 "lunch_end": datetime.time(12, 30),
+                 "end_date": Timestamp(datetime.datetime.now()),
+                 "tz_info": "Asia/Tokyo"}]
+jp_rules = [JPComingOfAgeDay, JPNationalFoundingDay, Dec31st,
+            Jan1st, Jan2nd, Jan3rd, JPVernalEquinox, JPShowaDay,
+            JPConstitutionDay, JPChildrensDay, JPMarineDay,
+            JPRespectForAgedDay, JPAutumnalEquinox, JPHealthSportsDay,
+            JPCultureDay, JPLaborThanksgivingDay, JPEmperorsBirthday]

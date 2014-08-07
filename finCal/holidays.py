@@ -6,6 +6,7 @@ from pandas.tseries.holiday import (after_nearest_workday,  Holiday,
                                     weekend_to_monday)
 import datetime
 from dateutil.relativedelta import MO, TH
+import ephem
 
 
 def calc_victoria_day(dt):
@@ -14,6 +15,29 @@ def calc_victoria_day(dt):
     date -= datetime.timedelta(dow)
     return Timestamp(date)
 
+
+def sunday_to_tuesday(dt):
+    if dt.weekday() == 6:
+        return dt + datetime.timedelta(2)
+
+
+def sunday_to_monday(dt):
+    if dt.weekday() == 6:
+        return dt + datetime.timedelta(1)
+
+
+def compute_vernal_equinox_obs(dt):
+    """ computes vernal equinox and observes using weekend_to_monday
+    """
+    equinox = ephem.next_spring_equinox(str(dt.year)).datetime().date()
+    return sunday_to_monday(Timestamp(equinox))
+
+
+def compute_autumnal_equinox_obs(dt):
+    """ computes autumnal equinox and observes using weekend_to_monday
+    """
+    equinox = ephem.next_autumnal_equinox(str(dt.year)).datetime().date()
+    return sunday_to_monday(Timestamp(equinox))
 
 AfterUSThanksgiving = Holiday('Thanksgiving', month=11, day=1,
                               offset=[DateOffset(weekday=TH(4)), Day(1)])
@@ -51,3 +75,50 @@ BoxingDayObsAfter = Holiday('Boxing day after', month=12, day=25,
                             observance=weekend_to_monday, offset=Day(1))
 ChristmasEveObsAfter = Holiday('Christmas eve ', month=12, day=25,
                                observance=weekend_to_monday, offset=Day(-1))
+# JP Holidays
+JPComingOfAgeDay = Holiday("Japan Coming of Age", month=1, day=2,
+                           offset=DateOffset(weekday=MO(2)))
+JPNationalFoundingDay = Holiday("Japan Founding Day ", month=2, day=11)
+JPVernalEquinox = Holiday("Vernal equinox obs ", month=3, day=1,
+                          observance=compute_vernal_equinox_obs)
+JPShowaDay = Holiday("Showa Day ", month=4, day=29,
+                     observance=sunday_to_monday)
+JPConstitutionDay = Holiday("Constitution Day", month=5, day=3,
+                            observance=sunday_to_monday)
+# http://en.wikipedia.org/wiki/Greenery_Day
+JPGreeneryDay = Holiday("Greenery Day (changed name 2007)", month=5, day=4,
+                        observance=sunday_to_tuesday,
+                        start_date=Timestamp("2007-01-01"))
+JPDayOfRest = Holiday("Day of rest", month=5, day=4,
+                      observance=sunday_to_monday,
+                      end_date=Timestamp("2007-01-01"))
+# http://en.wikipedia.org/wiki/Children's_Day_(Japan)
+JPChildrensDay = Holiday("Children's day", month=5, day=5,
+                         observance=sunday_to_monday,
+                         start_date=Timestamp("1985-01-01"))
+# http://en.wikipedia.org/wiki/Marine_Day
+JPMarineDay = Holiday("Marine Day", month=7, day=1,
+                      offset=DateOffset(weekday=MO(3)),
+                      start_date=Timestamp("2003-01-01"))
+# http://en.wikipedia.org/wiki/Respect_for_the_Aged_Day
+JPRespectForAgedDay = Holiday("Respect for the Aged Day", month=9, day=1,
+                              offset=DateOffset(weekday=MO(3)))
+JPAutumnalEquinox = Holiday("Autumnal Equinox", month=9, day=1,
+                            observance=compute_autumnal_equinox_obs)
+# http://en.wikipedia.org/wiki/Health_and_Sports_Day
+JPHealthSportsDay = Holiday("Health and Sports Day", month=10, day=1,
+                            offset=DateOffset(weekday=MO(2)))
+# http://en.wikipedia.org/wiki/Culture_Day
+JPCultureDay = Holiday("Culture Day", month=11, day=3,
+                       observance=sunday_to_monday)
+# http://en.wikipedia.org/wiki/Labour_Thanksgiving_Day
+JPLaborThanksgivingDay = Holiday("Labuor Thanksgiving  Day", month=11, day=3,
+                                 observance=sunday_to_monday)
+
+JPEmperorsBirthday = Holiday("Emperor Birthday", month=12, day=23,
+                             observance=sunday_to_monday)
+# not observed
+Jan3rd = Holiday("New Year's holiday not observed", month=1, day=3)
+Jan1st = Holiday("New Year's holiday not observed", month=1, day=1)
+Jan2nd = Holiday("New Year's holiday not observed", month=1, day=2)
+Dec31st = Holiday("New Year's holiday not observed", month=12, day=31)

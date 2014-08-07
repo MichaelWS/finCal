@@ -78,6 +78,7 @@ if sys.version_info[0] >= 3:
 else:
     setuptools_kwargs = {
         'install_requires': ['python-dateutil',
+                             'ephem',
                              'pytz >= 2011k',
                              'pandas  >= %s' % min_pandas_ver],
         'zip_safe': True,
