@@ -2,6 +2,7 @@ finCal
 ===============
 
 This is a calendar class for financial exchanges in python.
+Currently, Tokyo, Toronto and NYSE are implemented.
 
 It will be extended to include futures and roll dates 
 
