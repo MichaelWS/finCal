@@ -15,7 +15,7 @@ class TestCalendar(tm.TestCase):
     def test_us_stock(self):
         us = finCal.get_stock_calendar("US")
         holidays = us.holidays(self.start_date, self.end_date)
-        holidayList = [Timestamp('2001-01-01 00:00:00'),
+        holidayList = [Timestamp('2001-01-01'),
                        Timestamp('2001-01-15'),
                        Timestamp('2001-02-19'),
                        Timestamp('2001-05-28'),
@@ -52,7 +52,6 @@ class TestCalendar(tm.TestCase):
                        Timestamp('2004-09-06'),
                        Timestamp('2004-11-25'),
                        Timestamp('2004-12-24'),
-                       Timestamp('2004-12-31'),
                        Timestamp('2005-01-17'),
                        Timestamp('2005-02-21'),
                        Timestamp('2005-05-30'),
@@ -101,7 +100,6 @@ class TestCalendar(tm.TestCase):
                        Timestamp('2010-09-06'),
                        Timestamp('2010-11-25'),
                        Timestamp('2010-12-24'),
-                       Timestamp('2010-12-31'),
                        Timestamp('2011-01-17'),
                        Timestamp('2011-02-21'),
                        Timestamp('2011-05-30'),
@@ -122,20 +120,19 @@ class TestCalendar(tm.TestCase):
                        Timestamp('2012-12-25')]
         self.assertEqual(list(holidays), holidayList)
         result = us.get_market_times('2013-07-03')
-        expected = {'close': Timestamp('2013-07-03 13:00:00-0400', 
+        expected = {'close': Timestamp('2013-07-03 13:00:00',
                                        tz='America/New_York'),
-                    'start': Timestamp('2013-07-03 09:30:00-0400', 
+                    'start': Timestamp('2013-07-03 09:30:00',
                                        tz='America/New_York')}
+        print expected, result
         self.assertEqual(expected, result)
+        print expected, result
         result = us.get_market_times('2013-07-04')
+       
         expected = {'close': None, 'start': None}
         self.assertEqual(expected, result)
         # early_closes
-
-
-
         result = us.early_closes(self.start_date, self.end_date)
-
 
 
 if __name__ == '__main__':

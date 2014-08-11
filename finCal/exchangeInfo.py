@@ -1,5 +1,6 @@
 from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
-                             July4thEve, CAThanksgivingDay, CAFamilyDay,
+                             ChristmasEveNotObserved, July4thEve,
+                             CAThanksgivingDay, CAFamilyDay,
                              VictoriaDay, CanadaDay, CACivicHoliday,
                              CALaborDay, NewYearsEve, MayDay,
                              ChristmasObsAfter, BoxingDayObsAfter,
@@ -10,7 +11,9 @@ from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
                              JPLaborThanksgivingDay, JPComingOfAgeDay,
                              JPHealthSportsDay, JPConstitutionDay,
                              JPShowaDay, JPNationalFoundingDay, JPCultureDay,
-                             JPEmperorsBirthday)
+                             JPEmperorsBirthday, GBSummerBankHoliday,
+                             GBWilliamKateWedding, QueensDiamondJubilee,
+                             GBSpringBankHoliday, GBEarlyMayBankHoliday)
 
 import datetime
 from pandas.tseries.holiday import (Holiday, USMartinLutherKingJr,
@@ -63,8 +66,8 @@ nyse_times = {"start": datetime.time(9, 30),
 nyse_exchange_rules = nyse_rules + nyse_unscheduled
 
 
-nyse_early_close_rules = [July4thEve, ChristmasEve, AfterUSThanksgiving]
-
+nyse_early_close_rules = [July4thEve, ChristmasEveNotObserved,
+                          AfterUSThanksgiving]
 
 # ca_tsx_info
 ca_tsx_rules = [CAThanksgivingDay, NewYears, CAFamilyDay, VictoriaDay,
@@ -81,7 +84,7 @@ euronext_rules = [EasterMonday, GoodFriday, NewYears, MayDay,
 eu_early_close_rules = [ChristmasEve, NewYearsEve]
 
 euronext_times = {"start": datetime.time(9, 0),
-                  "close": datetime.time(16, 30),
+                  "close": datetime.time(17, 30),
                   "early_close": datetime.time(14, 00),
                   "end_date": None,
                   "tz_info": "Europe/Paris"}
@@ -107,3 +110,18 @@ jp_rules = [JPComingOfAgeDay, JPNationalFoundingDay, Dec31st,
             JPConstitutionDay, JPChildrensDay, JPMarineDay,
             JPRespectForAgedDay, JPAutumnalEquinox, JPHealthSportsDay,
             JPCultureDay, JPLaborThanksgivingDay, JPEmperorsBirthday]
+
+# lse info
+lse_rules = [NewYears, GBSummerBankHoliday, ChristmasObsAfter,
+             BoxingDayObsAfter, GBWilliamKateWedding, GoodFriday,
+             EasterMonday, QueensDiamondJubilee, GBSpringBankHoliday,
+             GBEarlyMayBankHoliday]
+
+
+lse_early_close_rules = [ChristmasEve, NewYearsEve]
+
+lse_times = {"start": datetime.time(8, 0),
+             "close": datetime.time(16, 30),
+             "early_close": datetime.time(12, 30),
+             "end_date": None,
+             "tz_info": "Europe/London"}

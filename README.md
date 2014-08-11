@@ -23,20 +23,20 @@ Out[4]:
 Length: 122, Freq: None, Timezone: None
 
 
-In [5]: us.get_market_times(pd.Timestamp("2015-07-03"))
+In [5]: us.get_market_times(pd.Timestamp("2013-07-04"))
 
 Out[5]: {'close': None, 'start': None}
 
 
-In [6]: us.get_market_times(pd.Timestamp("2015-07-02"))
+In [6]: us.get_market_times(pd.Timestamp("2013-07-03"))
 
 Out[6]: 
-{'close': Timestamp('2015-07-02 13:00:00-0400', tz='America/New_York'),
- 'start': Timestamp('2015-07-02 09:30:00-0400', tz='America/New_York')}
+{'close': Timestamp('2013-07-03 13:00:00-0400', tz='America/New_York'),
+ 'start': Timestamp('2013-07-03 09:30:00-0400', tz='America/New_York')}
 
-In [7]: us.get_market_times(pd.Timestamp("2015-07-01"))
+In [7]: us.get_market_times(pd.Timestamp("2013-07-01"))
 
 Out[7]: 
-{'close': Timestamp('2015-07-01 16:00:00-0400', tz='America/New_York'),
- 'start': Timestamp('2015-07-01 09:30:00-0400', tz='America/New_York')}
+{'close': Timestamp('2013-07-01 16:00:00-0400', tz='America/New_York'),
+ 'start': Timestamp('2013-07-01 09:30:00-0400', tz='America/New_York')}
 ```
