@@ -1,7 +1,6 @@
 from pandas.tseries.holiday import (AbstractHolidayCalendar)
 from pandas import Timestamp, DataFrame, Series
 import datetime
-import numpy as np
 from finCal.exchangeInfo import (nyse_early_close_rules, nyse_exchange_rules,
                                  nyse_times, nyse_rules, ca_tsx_rules,
                                  ca_tsx_times, ca_tsx_early_close_rules,
@@ -38,14 +37,6 @@ def _process_exch_time(exch_time_dict):
     except Exception:
         print("exchange info dicts need start, close, and early_close")
         raise
-
-
-def _remove_holidays(early_closes, holidays):
-    out = []
-    for early_close in early_closes:
-        if early_close not in holidays:
-            out.append(early_close)
-    return np.array(out)
 
 
 class ExchangeCalendar(AbstractHolidayCalendar):
@@ -101,48 +92,7 @@ class ExchangeCalendar(AbstractHolidayCalendar):
                                              key=lambda x: x["end_date"])
         self.holidays()
         # holidays then early_closes
-        self.early_closes()
-
-    def holidays(self, start=None, end=None, return_name=False):
-        """
-        Returns a curve with holidays between start_date and end_date
-
-        Parameters
-        ----------
-        start : starting date, datetime-like, optional
-        end : ending date, datetime-like, optional
-        return_names : bool, optional
-            If True, return a series that has dates and holiday names.
-            False will only return a DatetimeIndex of dates.
-
-        Returns
-        -------
-            DatetimeIndex of holidays removes holidays that fall on weekend
-        """
-        if start is None:
-            start = AbstractHolidayCalendar.start_date
-
-        if end is None:
-            end = AbstractHolidayCalendar.end_date
-
-        start = Timestamp(start)
-        end = Timestamp(end)
-
-        holidays = None
-        # If we don't have a cache or the dates are outside the prior cache,
-        # we get them again
-        if (self._cache is None or start < self._cache[0]
-                or end > self._cache[1]):
-            super(ExchangeCalendar, self).holidays(start, end, return_name)
-            holidays = del_non_open(self._cache[2], self.open_days)
-            self._cache = (start, end, holidays)
-        holidays = self._cache[2]
-        holidays = holidays[start:end]
-
-        if return_name:
-            return holidays
-        else:
-            return holidays.index
+        self.early_closes(return_name=True)
 
     def early_closes(self, start=None, end=None, return_name=False):
         """
@@ -185,14 +135,11 @@ class ExchangeCalendar(AbstractHolidayCalendar):
                     early_closes = early_closes.append(rule_early_closes)
             if early_closes is not None:
                 early_closes = early_closes.sort_index()
-                early_closes = del_non_open(early_closes, self.open_days)
             else:
                 early_closes = Series()
-            early_closes = _remove_holidays(early_closes, self._cache[2])
             self._early_close_cache = (start, end, early_closes)
         early_closes = self._early_close_cache[2]
         early_closes = early_closes[start:end]
-
         if return_name:
             return early_closes
         else:

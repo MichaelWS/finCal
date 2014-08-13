@@ -124,15 +124,39 @@ class TestCalendar(tm.TestCase):
                                        tz='America/New_York'),
                     'start': Timestamp('2013-07-03 09:30:00',
                                        tz='America/New_York')}
-        print expected, result
         self.assertEqual(expected, result)
-        print expected, result
         result = us.get_market_times('2013-07-04')
-       
         expected = {'close': None, 'start': None}
         self.assertEqual(expected, result)
         # early_closes
         result = us.early_closes(self.start_date, self.end_date)
+        expected = [Timestamp('2001-07-03 00:00:00'),
+                    Timestamp('2001-11-23 00:00:00'),
+                    Timestamp('2001-12-24 00:00:00'),
+                    Timestamp('2002-07-03 00:00:00'),
+                    Timestamp('2002-11-29 00:00:00'),
+                    Timestamp('2002-12-24 00:00:00'),
+                    Timestamp('2003-07-03 00:00:00'),
+                    Timestamp('2003-11-28 00:00:00'),
+                    Timestamp('2003-12-24 00:00:00'),
+                    Timestamp('2004-11-26 00:00:00'),
+                    Timestamp('2005-11-25 00:00:00'),
+                    Timestamp('2006-07-03 00:00:00'),
+                    Timestamp('2006-11-24 00:00:00'),
+                    Timestamp('2007-07-03 00:00:00'),
+                    Timestamp('2007-11-23 00:00:00'),
+                    Timestamp('2007-12-24 00:00:00'),
+                    Timestamp('2008-07-03 00:00:00'),
+                    Timestamp('2008-11-28 00:00:00'),
+                    Timestamp('2008-12-24 00:00:00'),
+                    Timestamp('2009-11-27 00:00:00'),
+                    Timestamp('2009-12-24 00:00:00'),
+                    Timestamp('2010-11-26 00:00:00'),
+                    Timestamp('2011-11-25 00:00:00'),
+                    Timestamp('2012-07-03 00:00:00'),
+                    Timestamp('2012-11-23 00:00:00'),
+                    Timestamp('2012-12-24 00:00:00')]
+        self.assertEqual(expected, list(result))
 
 
 if __name__ == '__main__':

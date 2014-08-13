@@ -1,6 +1,5 @@
 from finCal.holidays import (NewYears, Christmas, July4th, ChristmasEve,
-                             ChristmasEveNotObserved, July4thEve,
-                             CAThanksgivingDay, CAFamilyDay,
+                             July4thEve, CAThanksgivingDay, CAFamilyDay,
                              VictoriaDay, CanadaDay, CACivicHoliday,
                              CALaborDay, NewYearsEve, MayDay,
                              ChristmasObsAfter, BoxingDayObsAfter,
@@ -66,7 +65,7 @@ nyse_times = {"start": datetime.time(9, 30),
 nyse_exchange_rules = nyse_rules + nyse_unscheduled
 
 
-nyse_early_close_rules = [July4thEve, ChristmasEveNotObserved,
+nyse_early_close_rules = [July4thEve, ChristmasEve,
                           AfterUSThanksgiving]
 
 # ca_tsx_info
