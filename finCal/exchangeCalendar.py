@@ -78,11 +78,11 @@ class ExchangeCalendar(AbstractHolidayCalendar):
             self.early_close_rules = early_close_rules
         if time_info is not None:
             self.time_info = time_info
-        assert type(self.time_info) == dict or type(self.time_info) == list
+        assert isinstance(self.time_info, dict) or isinstance(self.time_info, list)
         if tz_info is not None:
             self.tz_info = tz_info
         time_info = self.time_info
-        if type(time_info) == dict:
+        if isinstance(time_info, dict):
             self.exchange_schedules = [_process_exch_time(time_info)]
         else:
             self.exchange_schedules = []
@@ -151,7 +151,7 @@ class ExchangeCalendar(AbstractHolidayCalendar):
         if market is closed
         returns (None, None)
         """
-        if type(date) != Timestamp:
+        if not isinstance(date, Timestamp):
             date = Timestamp(date)
         if (date in self._cache[2].index
                 or date.dayofweek not in self.open_days):
