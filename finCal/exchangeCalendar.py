@@ -6,7 +6,8 @@ from finCal.exchangeInfo import (nyse_early_close_rules, nyse_exchange_rules,
                                  ca_tsx_times, ca_tsx_early_close_rules,
                                  euronext_rules, eu_early_close_rules,
                                  euronext_times, lse_early_close_rules,
-                                 lse_rules, lse_times)
+                                 lse_rules, lse_times, jp_rules,
+                                 jp_early_close_rules, jp_times)
 
 BASE_TZ_INFO = "America/New_York"
 
@@ -248,16 +249,24 @@ class EU_StockExchangeCalendar(ExchangeCalendar):
     time_info = euronext_times
 
 
-class LSECalendar(ExchangeCalendar):
+class LSE_Calendar(ExchangeCalendar):
     rules = lse_rules
     early_close_rules = lse_early_close_rules
     tz_info = "Europe/London"
     time_info = lse_times
 
+
+class JP_StockExchangeCalendar(ExchangeCalendar):
+    rules = jp_rules
+    early_close_rules = []
+    tz_info = "Asia/Tokyo"
+    time_info = jp_times
+
 country_to_stock_class = {"US": US_StockExchangeCalendar,
                           "CA": CA_StockExchangeCalendar,
                           "EU": EU_StockExchangeCalendar,
-                          "UK": LSECalendar}
+                          "UK": LSE_Calendar,
+                          "JP": JP_StockExchangeCalendar}
 
 
 def get_stock_calendar(country):

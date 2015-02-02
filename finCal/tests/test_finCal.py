@@ -158,7 +158,6 @@ class TestCalendar(tm.TestCase):
                     Timestamp('2012-12-24 00:00:00')]
         self.assertEqual(expected, list(result))
 
-
 if __name__ == '__main__':
     nose.runmodule(argv=[__file__, '-vvs', '-x', '--pdb', '--pdb-failure'],
                    exit=False)
